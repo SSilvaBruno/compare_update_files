@@ -6,39 +6,48 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  uThreadClasses;
+  uThreadClasses, ExStdCtrls;
 
 type
 
-  { TForm1 }
+  { TFormPrincipal }
 
-  TForm1 = class(TForm)
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
+  TFormPrincipal = class(TForm)
+    btnStartServer: TButton;
+    mmConnections: TExMemo;
+    procedure btnStartServerClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
-
+    FServer: TServerThread;
   public
 
   end;
 
 var
-  Form1: TForm1;
+  FormPrincipal: TFormPrincipal;
 
 implementation
 
 {$R *.lfm}
 
-{ TForm1 }
+{ TFormPrincipal }
 
-procedure TForm1.Button1Click(Sender: TObject);
-var
-  Server: TServerThread;
+procedure TFormPrincipal.btnStartServerClick(Sender: TObject);
 begin
-  Server           := TServerThread.Create(True);
-  Server.IPAddress := '127.0.0.1';
-  Server.Port      := '3270';
-  Server.TimeOut   := 10000;
-  Server.Start;
+  FServer           := TServerThread.Create(True);
+  FServer.IPAddress := '127.0.0.1';
+  FServer.Port      := '3270';
+  FServer.TimeOut   := 10000;
+  FServer.Start;
+end;
+
+procedure TFormPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  if Assigned(FServer) then
+  begin
+    FServer.Terminate;
+    FServer.WaitFor;
+  end;
 end;
 
 end.

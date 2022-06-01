@@ -1,0 +1,10 @@
+
+backup/
+Client/backup
+Client/lib
+Server/backup
+Server/lib
+*.dbg
+*.exe
+*.lps
+*.res

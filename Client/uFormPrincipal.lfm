@@ -1,0 +1,21 @@
+object FormPrincipal: TFormPrincipal
+  Left = 423
+  Height = 240
+  Top = 166
+  Width = 320
+  Caption = 'Client'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnClose = FormClose
+  LCLVersion = '1.8.4.0'
+  object btnStatClient: TButton
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    Caption = 'Start client'
+    OnClick = btnStatClientClick
+    TabOrder = 0
+  end
+end
