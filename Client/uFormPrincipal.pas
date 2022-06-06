@@ -38,7 +38,7 @@ begin
   FThread.IPAddress := '127.0.0.1';
   FThread.Port      := '3270';
   FThread.TimeOut   := 10000;
-  FThread.Path      := 'C:\Tecnobyte\SAC_Pro';
+  FThread.Path      := 'C:\Users\ADM\Desktop\Launcher\Server';
   FThread.Start;
 end;
 

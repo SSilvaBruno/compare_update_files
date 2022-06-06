@@ -5,40 +5,18 @@ unit uThreadClasses;
 interface
 
 uses
-  Classes, SysUtils, contnrs, blcksock, synsock, fpjson, jsonparser, md5;
+  Classes, SysUtils, contnrs, blcksock, synsock, uThreadSocket, fpjson,
+  jsonparser, md5;
 
 type
-  { TUserThread }
-  TUserThread = class(TThread)
-  strict private
-    FBlockSocekt: TTCPBlockSocket;
-    FTimeOut    : Integer;
-    FPath       : String;
-  strict private
-    function GetSocket: TSocket;
-
-    procedure SetSocket(const AValue: TSocket);
-    procedure SendFileList(const ARequest: TJSONObject);
-    procedure SendNewFiles(const ARequest: TJSONObject);
-    procedure SendOpError;
-  strict protected
-    property FreeOnTerminate;
-  protected
-    procedure Execute; override;
-  public
-    constructor Create(const ASocket: TSocket); reintroduce;
-    destructor Destroy; override;
-
-    property Socket: TSocket read GetSocket write SetSocket;
-    property TimeOut: Integer read FTimeOut write FTimeOut;
-  end;
+  TStatusChangeEvent = procedure(const ASender: TTCPBlockSocket; const AStatus: Integer) of object;
 
   { TUserThreadList }
   TUserThreadList = class
   strict private
     FList: TObjectList;
   strict private
-    function GetItems(AIndex: Integer): TUserThread;
+    function GetItems(AIndex: Integer): TThreadSocket;
   public
     constructor Create;
     destructor Destroy; override;
@@ -50,19 +28,18 @@ type
     procedure Delete(const AIndex: Integer);
     procedure StopThreads;
 
-    property Items[AIndex: Integer]: TUserThread read GetItems; default;
+    property Items[AIndex: Integer]: TThreadSocket read GetItems; default;
   end;
 
   { TServerThread }
-
   TServerThread = class(TThread)
   strict private
-    FBlockSocket: TTCPBlockSocket;
-    FList       : TUserThreadList;
-    FIPAddress  : string;
-    FPort       : string;
-    FTimeOut    : Integer;
-    FOnMonitor  : TNotifyEvent;
+    FBlockSocket   : TTCPBlockSocket;
+    FList          : TUserThreadList;
+    FIPAddress     : string;
+    FPort          : string;
+    FTimeOut       : Integer;
+    FOnStatusChange: TStatusChangeEvent;
   strict private
     procedure SyncEventMonitor;
 
@@ -78,7 +55,7 @@ type
     property IPAddress: string read FIPAddress write FIPAddress;
     property Port: string read FPort write FPort;
     property TimeOut: Integer read FTimeOut write FTimeOut;
-    property OnMonitor: TNotifyEvent read FOnMonitor write FOnMonitor;
+    property OnStatusChange: TStatusChangeEvent read FOnStatusChange write FOnStatusChange;
   end;
 
   { TClientThread }
@@ -119,7 +96,6 @@ const
   STATUS_ERROR        = 400;
   OPERATION_GET_LIST  = 1;
   OPERATION_GET_FILE  = 2;
-  REFERENCE_FILE_NAME = 'ref.txt';
 
 { TClientThread }
 
@@ -182,7 +158,7 @@ begin
     with AFileList.Objects[I] do
     begin
       if not HashFileEquals(Strings['file'], Strings['hash']) then
-        FFilesToUpdate.Objects[FFilesToUpdate.Add].Strings['file'] := Strings['file'];
+        FFilesToUpdate.Objects[FFilesToUpdate.Add] := TJSONObject(GetJSON(Format('{"file": "%s"}', [Strings['file']])));
     end;
   end;
 end;
@@ -235,14 +211,10 @@ end;
 { TServerThread }
 
 procedure TServerThread.SyncEventMonitor;
-var
-  RemoteIP, RemotePot: string;
 begin
-  RemoteIP  := FBlockSocket.GetRemoteSinIP;
-  RemotePot := IntToStr(FBlockSocket.GetRemoteSinPort);
-
-  if Assigned(FOnMonitor) then
-    FOnMonitor(nil);
+  if Assigned(FOnStatusChange) then
+    FOnStatusChange(FBlockSocket, 0);
+  Sleep(0);
 end;
 
 procedure TServerThread.BlockSocketOnStatus(Sender: TObject; Reason: THookSocketReason; const Value: String);
@@ -278,11 +250,6 @@ begin
               FList.Delete(I);
           end;
         end;
-        if Assigned(FOnMonitor) then
-        begin
-          FOnMonitor(Self);
-          Sleep(0);
-        end;
       end;
     end;
   finally
@@ -310,20 +277,20 @@ end;
 
 { TUserThreadList }
 
-function TUserThreadList.GetItems(AIndex: Integer): TUserThread;
+function TUserThreadList.GetItems(AIndex: Integer): TThreadSocket;
 begin
-  Result := FList.Items[AIndex] as TUserThread;
+  Result := FList.Items[AIndex] as TThreadSocket;
 end;
 
 procedure TUserThreadList.StopThreads;
 var
   I: Integer;
-  Thread: TUserThread;
+  Thread: TThreadSocket;
 begin
   for I := 0 to FList.Count -1 do
   begin
     Thread := Items[I];
-    Thread.Terminate;
+    Thread.Stop;
     Thread.WaitFor;
   end;
 end;
@@ -342,7 +309,7 @@ end;
 
 function TUserThreadList.Add(const ASocket: TSocket): Integer;
 begin
-  Result := FList.Add(TUserThread.Create(ASocket));
+  Result := FList.Add(TThreadSocket.Create(ASocket));
 end;
 
 function TUserThreadList.Count: Integer;
@@ -366,92 +333,6 @@ end;
 procedure TUserThreadList.Delete(const AIndex: Integer);
 begin
   FList.Delete(AIndex);
-end;
-
-{ TUserThread }
-function TUserThread.GetSocket: TSocket;
-begin
-  Result := FBlockSocekt.Socket;
-end;
-
-procedure TUserThread.SetSocket(const AValue: TSocket);
-begin
-  FBlockSocekt.Socket := AValue;
-end;
-
-procedure TUserThread.SendFileList(const ARequest: TJSONObject);
-var
-  ReferenceFile: string;
-  ResponseJSON: TJSONObject;
-begin
-  FPath := ARequest.Strings['path'];
-  ReferenceFile := IncludeTrailingPathDelimiter(FPath) + REFERENCE_FILE_NAME;
-  ResponseJSON := TJSONObject.Create;
-  try
-    if FileExists(ReferenceFile) then
-    begin
-      ResponseJSON.Integers['status'] := STATUS_SUCCESS;
-      ResponseJSON.Strings['data'] := 'File list here.';
-    end else
-    begin
-      ResponseJSON.Integers['status'] := STATUS_ERROR;
-      ResponseJSON.Strings['error'] := 'Reference file not found.';
-    end;
-    FBlockSocekt.SendString(ResponseJSON.AsJSON + CRLF);
-    { TODO: Check error }
-  finally
-    ResponseJSON.Free;
-  end;
-end;
-
-procedure TUserThread.SendNewFiles(const ARequest: TJSONObject);
-begin
-
-end;
-
-procedure TUserThread.SendOpError;
-begin
-
-end;
-
-procedure TUserThread.Execute;
-var
-  RequestString: string;
-  RequestJSON: TJSONObject;
-begin
-  while not Terminated do
-  begin
-    RequestString := FBlockSocekt.RecvString(FTimeOut);
-    if FBlockSocekt.LastError <> 0 then
-      Break;
-
-    RequestJSON := GetJSON(RequestString) as TJSONObject;
-    try
-      case RequestJSON.Integers['operation'] of
-        OPERATION_GET_LIST: SendFileList(RequestJSON);
-        OPERATION_GET_FILE: SendNewFiles(RequestJSON);
-      else
-        SendOpError;
-      end;
-    finally
-      RequestJSON.Free;
-    end;
-  end;
-end;
-
-constructor TUserThread.Create(const ASocket: TSocket);
-begin
-  inherited Create(True);
-  FBlockSocekt        := TTCPBlockSocket.Create;
-  FBlockSocekt.Socket := ASocket;
-  FreeOnTerminate     := False;
-end;
-
-destructor TUserThread.Destroy;
-begin
-  FBlockSocekt.CloseSocket;
-  FBlockSocekt.Free;
-  inherited Destroy;
 end;
 
 end.

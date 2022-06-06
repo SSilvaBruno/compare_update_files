@@ -19,6 +19,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
     FServer: TServerThread;
+///    procedure ServerOnStatusChange(const ASender: TTCPBlockSocket; const AStatus: Integer);
   public
 
   end;
@@ -34,10 +35,11 @@ implementation
 
 procedure TFormPrincipal.btnStartServerClick(Sender: TObject);
 begin
-  FServer           := TServerThread.Create(True);
-  FServer.IPAddress := '127.0.0.1';
-  FServer.Port      := '3270';
-  FServer.TimeOut   := 10000;
+  FServer                := TServerThread.Create(True);
+  FServer.IPAddress      := '127.0.0.1';
+  FServer.Port           := '3270';
+  FServer.TimeOut        := 10000;
+///  FServer.OnStatusChange := @ServerOnStatusChange;
   FServer.Start;
 end;
 
@@ -49,6 +51,13 @@ begin
     FServer.WaitFor;
   end;
 end;
+{
+procedure TFormPrincipal.ServerOnStatusChange(const ASender: TTCPBlockSocket; const AStatus: Integer);
+begin
+  case AStatus of
+
+  end;
+end; }
 
 end.
 
