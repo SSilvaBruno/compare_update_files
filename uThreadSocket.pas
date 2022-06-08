@@ -13,7 +13,8 @@ type
 
   TThreadSocket = class(TThreadBase)
   strict private
-    FPath: string;
+    FPath        : string;
+    FOnDisconnect: TDisconectEvent;
   strict private
     function GetSocket: TSocket;
     function GetRemoteIP: string;
@@ -29,6 +30,7 @@ type
     property Socket: TSocket read GetSocket;
     property RemoteIP: string read GetRemoteIP;
     property RemotePort: string read GetRemotePort;
+    property OnDisconnect: TDisconectEvent read FOnDisconnect write FOnDisconnect;
   end;
 
 implementation
@@ -122,12 +124,24 @@ begin
       end;
     end;
   end;
+
+  if FatalError <> '' then
+  begin
+    with TJSONObject.Create do
+    try
+      Integers['status'] := 400;
+      strings['error']   := FatalError;
+      BlockSocket.SendString(AsJSON + CRLF);
+    finally
+      Free;
+    end;
+  end;
 end;
 
 constructor TThreadSocket.Create(const ASocket: TSocket);
 begin
   Inherited Create(False);
-  BlockSocket.Socket := ASocket;
+  BlockSocket.Socket   := ASocket;
 end;
 
 end.

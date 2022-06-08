@@ -8,14 +8,15 @@ uses
   Classes, SysUtils, blcksock, synsock;
 
 type
+  TDisconectEvent = procedure(const ASocket: TSocket) of object;
 
   { TThreadBase }
 
   TThreadBase = class(TThread)
   strict private
-    FBlockSocket: TTCPBlockSocket;
-    FTimeOut    : Integer;
-    FFatalError : string;
+    FBlockSocket : TTCPBlockSocket;
+    FTimeOut     : Integer;
+    FFatalError  : string;
   strict protected
     procedure Terminate;
   strict protected
@@ -63,7 +64,8 @@ end;
 
 procedure TThreadBase.Stop;
 begin
-  Terminate;
+  if not Terminated then
+    Terminate;
 end;
 
 end.

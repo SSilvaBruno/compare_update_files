@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  uThreadClasses, ExStdCtrls;
+  uThreadServer, ExStdCtrls;
 
 type
 
@@ -18,8 +18,7 @@ type
     procedure btnStartServerClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
-    FServer: TServerThread;
-///    procedure ServerOnStatusChange(const ASender: TTCPBlockSocket; const AStatus: Integer);
+    FServer: TThreadServer;
   public
 
   end;
@@ -35,21 +34,15 @@ implementation
 
 procedure TFormPrincipal.btnStartServerClick(Sender: TObject);
 begin
-  FServer                := TServerThread.Create(True);
-  FServer.IPAddress      := '127.0.0.1';
-  FServer.Port           := '3270';
-  FServer.TimeOut        := 10000;
-///  FServer.OnStatusChange := @ServerOnStatusChange;
+  FServer         := TThreadServer.Create(True);
+  FServer.TimeOut := 10000;
   FServer.Start;
 end;
 
 procedure TFormPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Assigned(FServer) then
-  begin
-    FServer.Terminate;
-    FServer.WaitFor;
-  end;
+  if Assigned(FServer) and FServer.IsRunning then
+    FServer.Stop;
 end;
 {
 procedure TFormPrincipal.ServerOnStatusChange(const ASender: TTCPBlockSocket; const AStatus: Integer);

@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, uFormPrincipal, uThreadClasses, ExBasic_Laz, uThreadBase,
-  uThreadSocket, uConst, uFunc, abbrevia
+  uThreadSocket, uConst, uFunc, abbrevia, uThreadSocketList, uThreadServer
   { you can add units after this };
 
 {$R *.res}
