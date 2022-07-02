@@ -5,12 +5,15 @@ unit uFunc;
 interface
 
 uses
-  Classes, SysUtils, fpjson, jsonparser, AbZipper, AbZipTyp, AbUtils;
+  Classes, SysUtils, fpjson, jsonparser, AbZipper, AbUnzper, AbZipTyp, AbUtils,
+  AbArcTyp, md5;
 
   function GetFileFullName(const APath, AFile: string): string;
   function GetReferenceFileFullName(const APath: string): string;
   function GetJSONArrayOfFileList(const APath: string): TJSONArray;
   function FileArrayToZipStream(const ABaseDir: string; const AFilesArray: TJSONArray; var AStream: TMemoryStream): Boolean;
+  function FileHashEquals(const APath, AFile, AHash: string): Boolean;
+  function ZipStreamToFile(const ABaseDir: string; const AStream: TMemoryStream): Boolean;
 
 implementation
 
@@ -77,6 +80,38 @@ begin
   finally
     FileStream.Free;
     Zip.Free;
+  end;
+end;
+
+function FileHashEquals(const APath, AFile, AHash: string): Boolean;
+var
+  LocalFile: string;
+begin
+  LocalFile := GetFileFullName(APath, AFile);
+  Result    := FileExists(LocalFile) and (AHash = MD5Print(MD5File(LocalFile)));
+end;
+
+function ZipStreamToFile(const ABaseDir: string; const AStream: TMemoryStream): Boolean;
+var
+  UnZip: TAbUnZipper;
+begin
+  Result     := True;
+  UnZip      := TAbUnZipper.Create(nil);
+  try
+    UnZip.ExtractOptions := [eoCreateDirs, eoRestorePath];
+    UnZip.BaseDirectory   := ABaseDir;
+    UnZip.ArchiveType     := atZip;
+    UnZip.ForceType       := True;
+    UnZip.Password        := '';
+    UnZip.Stream          := AStream;
+    try
+      UnZip.ExtractFiles('*.*');
+    except
+      Result := False;
+      raise;
+    end;
+  finally
+    UnZip.Free;
   end;
 end;
 

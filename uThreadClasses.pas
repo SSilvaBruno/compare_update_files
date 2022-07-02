@@ -13,12 +13,6 @@ type
   { TClientThread }
   TClientThread = class(TThread)
   strict private
-    FBlockSocket  : TTCPBlockSocket;
-    FIPAddress    : string;
-    FPort         : string;
-    FTimeOut      : Integer;
-    FPath         : string;
-    FFilesToUpdate: TJSONArray;
   strict private
     function HashFileEquals(const AFile, AHash: string): Boolean;
 
@@ -32,15 +26,12 @@ type
   public
     constructor Create(const AFreeOnTerminate: Boolean); reintroduce;
     destructor Destroy; override;
-
-    property IPAddress: string read FIPAddress write FIPAddress;
-    property Port: string read FPort write FPort;
-    property TimeOut: Integer read FTimeOut write FTimeOut;
-    property Path: string read FPath write FPath;
   end;
 
 
 implementation
+
+uses uFunc;
 
 const
   STATUS_SUCCESS      = 200;
@@ -96,7 +87,6 @@ end;
 
 procedure TClientThread.GetFilesToUpdate;
 begin
-
 end;
 
 procedure TClientThread.CompareFiles(const AFileList: TJSONArray);
@@ -147,7 +137,6 @@ constructor TClientThread.Create(const AFreeOnTerminate: Boolean);
 begin
   inherited Create(True);
   FBlockSocket    := TTCPBlockSocket.Create;
-  FFilesToUpdate  := TJSONArray.Create;
   FreeOnTerminate := AFreeOnTerminate;
 end;
 

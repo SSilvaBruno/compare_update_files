@@ -14,9 +14,9 @@ type
 
   TThreadBase = class(TThread)
   strict private
-    FBlockSocket : TTCPBlockSocket;
-    FTimeOut     : Integer;
-    FFatalError  : string;
+    FBlockSocket: TTCPBlockSocket;
+    FTimeOut    : Integer;
+    FFatalError : string;
   strict protected
     procedure Terminate;
   strict protected

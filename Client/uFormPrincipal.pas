@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  uThreadClasses;
+  MaskEdit, ExtCtrls, Menus, EditBtn, uThreadClient;
 
 type
 
@@ -14,10 +14,13 @@ type
 
   TFormPrincipal = class(TForm)
     btnStatClient: TButton;
+    edtRemoteIP: TLabeledEdit;
+    edtRemotePort: TLabeledEdit;
+    edtBaseDir: TLabeledEdit;
     procedure btnStatClientClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   private
-    FThread: TClientThread;
+    FThread: TThreadClient;
   public
 
   end;
@@ -34,21 +37,18 @@ implementation
 
 procedure TFormPrincipal.btnStatClientClick(Sender: TObject);
 begin
-  FThread           := TClientThread.Create(True);
-  FThread.IPAddress := '127.0.0.1';
-  FThread.Port      := '3270';
-  FThread.TimeOut   := 10000;
-  FThread.Path      := 'C:\Users\ADM\Desktop\Launcher\Server';
+  FThread            := TThreadClient.Create(True);
+  FThread.RemoteIP   := edtRemoteIP.Text;
+  FThread.RemotePort := edtRemotePort.Text;
+  FThread.Path       := edtBaseDir.Text;
+  FThread.TimeOut    := 10000;
   FThread.Start;
 end;
 
 procedure TFormPrincipal.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Assigned(FThread) then
-  begin
-    FThread.Terminate;
-    FThread.WaitFor;
-  end;
+  if Assigned(FThread) and FThread.IsRunning then
+    FThread.Stop;
 end;
 
 end.
