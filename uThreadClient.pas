@@ -44,7 +44,7 @@ uses uConst, uFunc;
 
 procedure TThreadClient.CompareFiles(const AFileList: TJSONArray);
 var
-  I: Integer;
+  I, ItemIndex: Integer;
   FileItem: TJSONObject;
 begin
   FFilesToUpdate.Clear;
@@ -54,7 +54,8 @@ begin
     begin
       if not FileHashEquals(FPath, Strings['file'], Strings['hash']) then
       begin
-        FileItem := FFilesToUpdate.Objects[FFilesToUpdate.Add];
+        ItemIndex := FFilesToUpdate.Add(TJSONObject.Create);
+        FileItem  := FFilesToUpdate.Objects[ItemIndex];
         FileItem.Strings['file'] := Strings['file'];
       end;
     end;
@@ -131,7 +132,8 @@ begin
     finally
       Free;
     end;
-  end;
+  end else
+    raise Exception.Create(BlockSocket.LastErrorDesc);
 end;
 
 procedure TThreadClient.Execute;

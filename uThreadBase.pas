@@ -47,6 +47,7 @@ begin
   Inherited Create(True);
   FBlockSocket    := TTCPBlockSocket.Create;
   FreeOnTerminate := AFreeOnTerminate;
+  FTimeOut        := 10000;
   FFatalError     := '';
 end;
 

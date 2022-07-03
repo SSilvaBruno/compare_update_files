@@ -7,6 +7,9 @@ object FormPrincipal: TFormPrincipal
   ClientHeight = 240
   ClientWidth = 459
   OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   LCLVersion = '1.8.4.0'
   object btnStatClient: TButton
     Left = 15

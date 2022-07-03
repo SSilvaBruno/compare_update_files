@@ -8,3 +8,4 @@ Server/lib
 *.exe
 *.lps
 *.res
+Client/Client.ini
