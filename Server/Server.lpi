@@ -66,7 +66,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="8">
       <Unit0>
         <Filename Value="Server.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -79,33 +79,29 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\uThreadClasses.pas"/>
+        <Filename Value="..\uThreadBase.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="..\uThreadBase.pas"/>
+        <Filename Value="..\uThreadSocket.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="..\uThreadSocket.pas"/>
+        <Filename Value="..\uConst.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\uConst.pas"/>
+        <Filename Value="..\uFunc.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\uFunc.pas"/>
+        <Filename Value="..\uThreadSocketList.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\uThreadSocketList.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit7>
-      <Unit8>
         <Filename Value="..\uThreadServer.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit8>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

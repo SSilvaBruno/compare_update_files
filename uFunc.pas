@@ -11,9 +11,13 @@ uses
   function GetFileFullName(const APath, AFile: string): string;
   function GetReferenceFileFullName(const APath: string): string;
   function GetJSONArrayOfFileList(const APath: string): TJSONArray;
+  function GetHashFile(const AFile: string): string;
   function FileArrayToZipStream(const ABaseDir: string; const AFilesArray: TJSONArray; var AStream: TMemoryStream): Boolean;
   function FileHashEquals(const APath, AFile, AHash: string): Boolean;
   function ZipStreamToFile(const ABaseDir: string; const AStream: TMemoryStream): Boolean;
+  function ZipStreamToString(const AStream: TStream): string;
+
+  procedure SaveStringToFile(const AData, AFileName: string);
 
 implementation
 
@@ -45,6 +49,11 @@ begin
   end;
 end;
 
+function GetHashFile(const AFile: string): string;
+begin
+  Result := MD5Print(MD5File(AFile));
+end;
+
 function FileArrayToZipStream(const ABaseDir: string; const AFilesArray: TJSONArray; var AStream: TMemoryStream): Boolean;
 var
   FileStream: TMemoryStream;
@@ -70,7 +79,7 @@ begin
       if FileExists(FileName) then
       begin
         FileStream.LoadFromFile(FileName);
-        Zip.AddFromStream(AFilesArray.Strings[I], FileStream);
+        Zip.AddFromStream(AFilesArray.Objects[I].Strings['file'], FileStream);
       end else
       begin
         Result := False;
@@ -88,7 +97,7 @@ var
   LocalFile: string;
 begin
   LocalFile := GetFileFullName(APath, AFile);
-  Result    := FileExists(LocalFile) and (AHash = MD5Print(MD5File(LocalFile)));
+  Result    := FileExists(LocalFile) and (AHash = GetHashFile(LocalFile));
 end;
 
 function ZipStreamToFile(const ABaseDir: string; const AStream: TMemoryStream): Boolean;
@@ -112,6 +121,38 @@ begin
     end;
   finally
     UnZip.Free;
+  end;
+end;
+
+function ZipStreamToString(const AStream: TStream): string;
+var
+  StringStream: TStringStream;
+begin
+  StringStream := TStringStream.Create('');
+  try
+    AStream.Position := 0;
+    StringStream.CopyFrom(AStream, AStream.Size);
+    Result := StringStream.DataString;
+  finally
+    StringStream.Free;
+  end;
+end;
+
+procedure SaveStringToFile(const AData, AFileName: string);
+var
+  StringStream: TStringStream;
+  FileStream: TFileStream;
+begin
+  StringStream := TStringStream.Create(AData);
+  try
+    FileStream := TFileStream.Create(AFileName, fmCreate);
+    try
+      FileStream.CopyFrom(StringStream, StringStream.Size);
+    finally
+      FileStream.Free;
+    end;
+  finally
+    StringStream.Free;
   end;
 end;
 

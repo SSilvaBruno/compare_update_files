@@ -34,8 +34,10 @@ implementation
 
 procedure TFormPrincipal.btnStartServerClick(Sender: TObject);
 begin
-  FServer         := TThreadServer.Create(True);
-  FServer.TimeOut := 10000;
+  FServer           := TThreadServer.Create(True);
+  FServer.LocalIP   := '192.168.1.6';
+  FServer.LocalPort := '3270';
+  FServer.TimeOut   := 10000;
   FServer.Start;
 end;
 
@@ -44,13 +46,6 @@ begin
   if Assigned(FServer) and FServer.IsRunning then
     FServer.Stop;
 end;
-{
-procedure TFormPrincipal.ServerOnStatusChange(const ASender: TTCPBlockSocket; const AStatus: Integer);
-begin
-  case AStatus of
-
-  end;
-end; }
 
 end.
 

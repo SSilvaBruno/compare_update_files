@@ -86,13 +86,15 @@ begin
       with TJSONObject.Create do
       try
         Integers['status'] := 200;
-        Strings['data']    := Stream.ReadAnsiString;
+        Strings['data']    := ZipStreamToString(Stream);
         BlockSocket.SendString(AsJSON + CRLF);
-        { TODO: Check error }
+        if BlockSocket.LastError <> 0 then
+          raise Exception.Create(BlockSocket.LastErrorDesc);
       finally
         Free;
       end;
-    end;
+    end else
+      raise Exception.Create('Error on zip files.');
   finally
     Stream.Free;
   end;

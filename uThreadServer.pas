@@ -22,6 +22,9 @@ type
   public
     constructor Create(const AFreeOnTerminate: Boolean);
     destructor Destroy; override;
+
+    property LocalIP: string read FLocalIP write FLocalIP;
+    property LocalPort: string read FLocalPort write FLocalPort;
   end;
 
 implementation

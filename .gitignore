@@ -1,11 +1,9 @@
 
-backup/
-Client/backup
-Client/lib
-Server/backup
-Server/lib
+*backup*
+*lib*
 *.dbg
 *.exe
 *.lps
 *.res
-Client/Client.ini
+*.ini
+*.ico

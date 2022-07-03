@@ -1,0 +1,258 @@
+object FormPrincipal: TFormPrincipal
+  Left = 312
+  Height = 323
+  Top = 82
+  Width = 560
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'FormPrincipal'
+  ClientHeight = 323
+  ClientWidth = 560
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.8.4.0'
+  object pgcRules: TPageControl
+    Left = 0
+    Height = 223
+    Top = 60
+    Width = 560
+    ActivePage = tabFiles
+    Align = alClient
+    Enabled = False
+    TabIndex = 0
+    TabOrder = 0
+    object tabFiles: TTabSheet
+      Caption = 'Files'
+      ClientHeight = 195
+      ClientWidth = 552
+      object pnlRuleFiles: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 552
+        Align = alTop
+        Caption = 'The files in this list will be added to the final list.'
+        Color = clTeal
+        Font.Color = clWhite
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object mmRuleFiles: TMemo
+        Left = 10
+        Height = 90
+        Top = 95
+        Width = 530
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Color = clBtnFace
+        ReadOnly = True
+        TabOrder = 1
+      end
+      object lblRuleFiles: TLabel
+        Left = 10
+        Height = 15
+        Top = 48
+        Width = 50
+        Caption = 'Select file'
+        ParentColor = False
+      end
+      object btnRuleFile: TSpeedButton
+        Left = 513
+        Height = 22
+        Top = 65
+        Width = 23
+        Color = clSkyBlue
+        Flat = True
+        Font.Color = clGreen
+        Font.Height = -21
+        Font.Style = [fsBold]
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000170000008800000002000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000016000000B80000007000000092000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000014000000BB0000002800000000000000670000007D0000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000007F000000260000000000000000000000000000007E0000
+          0067000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          008E000000550000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0002000000A30000004500000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000006000000AB00000032000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000D00000067000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        OnClick = btnRuleFileClick
+        ParentFont = False
+      end
+      object edtRuleFiles: TEditButton
+        Left = 10
+        Height = 23
+        Top = 65
+        Width = 504
+        Anchors = [akTop, akLeft, akRight]
+        ButtonWidth = 23
+        Color = clBtnFace
+        DirectInput = False
+        Flat = True
+        FocusOnButtonClick = True
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000FF62655DFF63634D00000000000000000000
+          0000000000000000000000000000FF6A6A0CFF65653AFF616544FF62622CFF7F
+          7F020000000000000000FF62646DFF6365FEFF63636100000000000000000000
+          000000000000FF5F5F10FF626594FF6264F5FF6365FFFF6365FFFF6365FFFF63
+          65DDFF61645EFF63666EFF6365FEFF6164700000000000000000000000000000
+          0000FF666619FF6264D7FF6365E5FF636567FF62621AFF555506FF62622CFF62
+          6491FF6365FCFF6365FFFF62656F000000000000000000000000000000000000
+          0000FF6364BCFF6265DBFF5F6A18000000000000000000000000000000000000
+          0000FF62654EFF6365FCFF61645E00000000000000000000000000000000FF62
+          663EFF6365FFFF65653A00000000000000000000000000000000000000000000
+          000000000000FF626491FF6365DDFF7F7F02000000000000000000000000FF63
+          658AFF6364D50000000000000000000000000000000000000000000000000000
+          000000000000FF60662DFF6365FFFF64642B000000000000000000000000FF63
+          64A7FF6364B10000000000000000000000000000000000000000000000000000
+          000000000000FF6D6D07FF6365FFFF616549000000000000000000000000FF63
+          659AFF6364C30000000000000000000000000000000000000000000000000000
+          000000000000FF62621AFF6365FFFF61663C000000000000000000000000FF62
+          6460FF6365F9FF63631700000000000000000000000000000000000000000000
+          000000000000FF636567FF6264F5FF6A6A0C000000000000000000000000FF6A
+          6A0CFF6364E7FF6265A6FF000001000000000000000000000000000000000000
+          0000FF5F6A18FF6365E5FF626594000000000000000000000000000000000000
+          0000FF616549FF6365FCFF6265A6FF686816000000000000000000000000FF65
+          653AFF6265DBFF6264D7FF696911000000000000000000000000000000000000
+          000000000000FF616549FF6265E8FF6365F9FF6265C4FF6265B0FF6364D5FF63
+          65FFFF6364BCFF66661900000000000000000000000000000000000000000000
+          00000000000000000000FF6A6A0CFF626460FF63659AFF6265A8FF626489FF62
+          663E000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        MaxLength = 0
+        NumGlyphs = 1
+        OnButtonClick = edtRuleFilesButtonClick
+        PasswordChar = #0
+        TabOrder = 2
+      end
+    end
+    object tabExtensions: TTabSheet
+      Caption = 'Extensions'
+      ClientHeight = 195
+      ClientWidth = 548
+      object pnlRuleExtensions: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 548
+        Align = alTop
+        Caption = 'Files that have one of the extensions in this list will be added to the final list.'
+        Color = clTeal
+        Font.Color = clWhite
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+      end
+    end
+    object tabExceptions: TTabSheet
+      Caption = 'Exceptions'
+      ClientHeight = 195
+      ClientWidth = 548
+      object pnlRuleExceptions: TPanel
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 548
+        Align = alTop
+        Caption = 'Files from this list will not be added to the final list, even if they have one of the extensions listed in the ''extensions'' tab.'
+        Color = clTeal
+        Font.Color = clWhite
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        TabOrder = 0
+        Wordwrap = True
+      end
+    end
+  end
+  object pnlDirectory: TPanel
+    Left = 0
+    Height = 60
+    Top = 0
+    Width = 560
+    Align = alTop
+    ClientHeight = 60
+    ClientWidth = 560
+    TabOrder = 1
+    object edtBaseDir: TDirectoryEdit
+      Left = 15
+      Height = 23
+      Top = 25
+      Width = 530
+      DialogTitle = 'Select root directory'
+      ShowHidden = False
+      ButtonWidth = 23
+      DirectInput = False
+      NumGlyphs = 1
+      Flat = True
+      FocusOnButtonClick = True
+      Anchors = [akTop, akLeft, akRight]
+      Color = clBtnFace
+      MaxLength = 0
+      TabOrder = 0
+      OnChange = edtBaseDirChange
+    end
+    object lblBaseDir: TLabel
+      Left = 15
+      Height = 15
+      Top = 8
+      Width = 75
+      Caption = 'Root directory'
+      ParentColor = False
+    end
+  end
+  object pnlButton: TPanel
+    Left = 0
+    Height = 40
+    Top = 283
+    Width = 560
+    Align = alBottom
+    ClientHeight = 40
+    ClientWidth = 560
+    TabOrder = 2
+    object btnCreateJSONFile: TBitBtn
+      Left = 130
+      Height = 30
+      Top = 5
+      Width = 300
+      Caption = 'Create JSON file'
+      OnClick = btnCreateJSONFileClick
+      TabOrder = 0
+    end
+  end
+end
